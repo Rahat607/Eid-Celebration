@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ঈদ সারপ্রাইজ!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { margin: 0; background: #020617; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .card { text-align: center; background: rgba(255, 255, 255, 0.05); padding: 50px; border-radius: 30px; border: 1px solid rgba(251, 191, 36, 0.3); backdrop-filter: blur(15px); cursor: pointer; transition: 0.4s; box-shadow: 0 0 50px rgba(251, 191, 36, 0.1); width: 80%; max-width: 400px; }
+        .gift-box { font-size: 100px; margin-bottom: 20px; transition: transform 0.3s; }
+        .card:hover .gift-box { transform: scale(1.1) rotate(5deg); }
+        h1 { color: #fbbf24; font-size: 2.5rem; margin-top: 10px; }
+        p { font-size: 1.2rem; line-height: 1.6; opacity: 0.9; }
+        .hidden { display: none; }
+        .btn-share { margin-top: 20px; padding: 10px 20px; border-radius: 50px; border: none; background: #25d366; color: white; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<audio id="eidMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+<div class="card" id="mainCard" onclick="openGift()">
+    <div id="closedState">
+        <span class="gift-box">✉️</span>
+        <h2>আপনার জন্য একটি চিঠি!<br><span style="font-size: 16px; color: #fbbf24;">খুলতে এখানে ক্লিক করুন</span></h2>
+    </div>
+    
+    <div id="openState" class="hidden">
+        <span class="gift-box">🌙</span>
+        <h1 id="title">ঈদ মোবারক!</h1>
+        <p id="wishText"></p>
+        <a href="#" class="btn-share" id="whatsappLink">বন্ধুকে পাঠান</a>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const senderName = params.get('name') || "আপনার বন্ধু";
+
+    function openGift() {
+        // ১. মিউজিক প্লে করা
+        const music = document.getElementById('eidMusic');
+        music.play().catch(e => console.log("Audio play failed:", e));
+
+        // ২. আতশবাজি ইফেক্ট
+        confetti({
+            particleCount: 200,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: ['#fbbf24', '#ffffff', '#25d366']
+        });
+
+        // ৩. কন্টেন্ট পরিবর্তন
+        document.getElementById('closedState').classList.add('hidden');
+        document.getElementById('openState').classList.remove('hidden');
+        document.getElementById('wishText').innerText = `${senderName}-এর পক্ষ থেকে এই সুন্দর ঈদ হোক আপনার জীবনের সেরা ঈদ। আনন্দ আর ভালোবাসায় কাটুক প্রতিটি মুহূর্ত।`;
+
+        // ৪. হোয়াটসঅ্যাপ লিঙ্ক তৈরি (ভাইরাল হওয়ার জন্য)
+        const currentUrl = window.location.href.split('?')[0];
+        const shareMsg = `https://wa.me/?text=দেখো তোমার জন্য একটা ঈদের সারপ্রাইজ পাঠালাম! নিচের লিঙ্কে ক্লিক করো: ${currentUrl}?name=${encodeURIComponent(senderName)}`;
+        document.getElementById('whatsappLink').href = shareMsg;
+    }
+</script>
+
+</body>
+</html>
